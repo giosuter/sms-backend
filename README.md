@@ -41,5 +41,5 @@ TOKEN GitHub for SMS Back-End Project Token
 -------------------------------------------
 
 Username: giosuter
-Password: XXXXXXXXX
+Password: ghp_xxx_REDACTED_xxx
 
