@@ -1,0 +1,39 @@
+# Ignore build and dependency directories
+target/
+bin/
+
+# Ignore IDE-specific settings (already present but adding missing ones)
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Ignore Eclipse and STS settings
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings/
+.springBeans
+.sts4-cache
+
+# Ignore Maven wrapper files
+.mvn/
+!mvn/wrapper/maven-wrapper.jar
+
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore environment and configuration backup files
+.env
+*.properties~
+*.yml~
+*.yaml~
+*.bak
+
+# Ignore logs and temporary files
+logs/
+*.log
+hs_err_pid*
+replay_pid*
