@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+/.DS_Store
+/sms_backend.log
+/sms_backend.pid
