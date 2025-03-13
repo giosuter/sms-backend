@@ -37,9 +37,12 @@ build/
 
 # Other files to ignore
 *.log
+/logs/
+/logs/*
 *.bak
 *.pid
 *.md
+
 
 # macOS system file
 .DS_Store  
