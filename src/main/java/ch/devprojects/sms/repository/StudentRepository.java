@@ -32,8 +32,9 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 	List<Student> findByCity(String city);
 	List<Student> findByCountry(String country);
 	List<Student> findByNationality(String nationality);
-	List<Student> findByStatus(String status);
+	
 	List<Student> findByProgramLevel(String programLevel);
+	List<Student> findByStatus(String status);
     /**
      * Checks if a student exists with the given email.
      * 
