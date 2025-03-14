@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -25,6 +26,7 @@ import ch.devprojects.sms.service.StudentService;
  *
  * Base path: /students (since context-path is already /sms)
  */
+@CrossOrigin(origins = "http://localhost:4200") // Allow Angular frontend
 @RestController
 @RequestMapping("/students") // Endpoints will be under /sms/students
 public class StudentController {
