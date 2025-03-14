@@ -17,19 +17,19 @@ public class Student {
     @Column(name = "last_name", nullable = false, length = 100)
     private String lastName;
 
-    @Column(name = "address", nullable = false, length = 255)
+    @Column(name = "address", length = 255) // Nullable by default, no need to specify nullable = true
     private String address;
 
-    @Column(name = "plz", nullable = false, length = 20)
+    @Column(name = "plz", length = 20)
     private String plz;
 
-    @Column(name = "city", nullable = false, length = 100)
+    @Column(name = "city", length = 100)
     private String city;
 
-    @Column(name = "country", nullable = false, length = 100)
+    @Column(name = "country", length = 100)
     private String country;
 
-    @Column(name = "nationality", nullable = false, length = 100)
+    @Column(name = "nationality", length = 100)
     private String nationality;
 
     @Column(name = "email", nullable = false, unique = true, length = 100)
@@ -38,7 +38,7 @@ public class Student {
     @Column(name = "phone_number", nullable = false, length = 50)
     private String phoneNumber;
 
-    private LocalDate dateOfBirth;  // FIXED: Changed to LocalDate (removed @Temporal)
+    private LocalDate dateOfBirth;  
 
     @Column(name = "gender", length = 20)
     private String gender;
@@ -46,7 +46,7 @@ public class Student {
     @Column(name = "student_id", nullable = false, unique = true, length = 20)
     private String studentId;
 
-    private LocalDate enrollmentDate;  // FIXED: Changed to LocalDate (removed @Temporal)
+    private LocalDate enrollmentDate;
 
     @Column(name = "status", nullable = false, length = 20)
     private String status;
@@ -54,10 +54,10 @@ public class Student {
     @Column(name = "program_level", nullable = false, length = 50)
     private String programLevel;
 
-    // 1. No-args constructor (needed by JPA)
+    // Default constructor
     public Student() {}
 
-    // 2. Constructor with all fields (except ID)
+    // Constructor with all fields (except ID)
     public Student(String firstName, String lastName, String address, String plz, String city,
                    String country, String nationality, String email, String phoneNumber,
                    LocalDate dateOfBirth, String gender, String studentId, LocalDate enrollmentDate,
@@ -79,7 +79,7 @@ public class Student {
         this.programLevel = programLevel;
     }
 
-    // 3. Constructor with only essential fields (e.g., required at registration)
+    // Constructor with only essential fields
     public Student(String firstName, String lastName, String email, String phoneNumber,
                    LocalDate dateOfBirth, String studentId, LocalDate enrollmentDate, String status) {
         this.firstName = firstName;
