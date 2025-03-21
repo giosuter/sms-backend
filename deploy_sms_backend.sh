@@ -1,74 +1,70 @@
 #!/bin/bash
 
-# Define the port and process ID file
+printenv
+
+# Variables
+WAR_NAME="sms.war"
+LOCAL_WAR_PATH="/Users/giovannisuter/dev/projects/sms/back-end/workspace/sms-backend/target/$WAR_NAME"
+TOMCAT_WEBAPPS="/Users/giovannisuter/dev/tools/apache-tomcat-10.1.33/webapps"
+TOMCAT_BIN="/Users/giovannisuter/dev/tools/apache-tomcat-10.1.33/bin"
 PORT=8080
-PID_FILE="sms_backend.pid"
-LOG_FILE="sms_backend.log"
+LOG_FILE="$TOMCAT_WEBAPPS/../logs/sms_backend.log"  # Adjusted to Tomcat’s log dir
 
 # Function to check if the port is in use
 is_port_in_use() {
-    lsof -i :$PORT > /dev/null
+    lsof -i :"$PORT" > /dev/null 2>&1
+    return $?
 }
 
-# Function to stop the running application
-stop_running_app() {
-    if [ -f "$PID_FILE" ]; then
-        PID=$(cat "$PID_FILE")
-        if kill -0 "$PID" 2>/dev/null; then
-            echo "Stopping running application (PID: $PID)..."
-            kill "$PID"
-            sleep 2
-            if ps -p "$PID" > /dev/null; then
-                echo "Force stopping process..."
-                kill -9 "$PID"
-            fi
-            rm -f "$PID_FILE"
-            echo "Application stopped."
+# Function to stop Tomcat
+stop_tomcat() {
+    if is_port_in_use; then
+        echo "Stopping Tomcat on port $PORT..."
+        "$TOMCAT_BIN/shutdown.sh" > /dev/null 2>&1
+        sleep 5
+
+        if is_port_in_use; then
+            echo "Force killing process using port $PORT..."
+            kill -9 "$(lsof -t -i :$PORT)" 2>/dev/null
         fi
-    elif is_port_in_use; then
-        PID=$(lsof -t -i :$PORT)
-        echo "Stopping application using port $PORT (PID: $PID)..."
-        kill -9 "$PID"
+    else
+        echo "Tomcat is not running on port $PORT."
     fi
 }
 
-# Get the Spring profile from the environment variable or default to 'dev'
-PROFILE=${SPRING_PROFILES_ACTIVE:-dev}
-
-# Navigate to the project directory
-cd /Users/giovannisuter/dev/projects/sms/back-end/workspace/sms-backend || { echo "Directory not found! Exiting..."; exit 1; }
-
-# Clean and install the project
-echo "Cleaning and installing the project..."
-./mvnw clean install -DskipTests
+# Build the project
+echo "Building the project..."
+cd /Users/giovannisuter/dev/projects/sms/back-end/workspace/sms-backend || { echo "Project directory not found!"; exit 1; }
+./mvnw clean package -DskipTests
 if [ $? -ne 0 ]; then
     echo "Build failed! Exiting..."
     exit 1
 fi
 
-# Stop the running application if it's already running
-stop_running_app
+# Stop Tomcat if running
+stop_tomcat
 
-# Start the Spring Boot application in the background with nohup
-echo "Starting Spring Boot application with profile $PROFILE..."
-nohup ./mvnw spring-boot:run -Dspring-boot.run.profiles=$PROFILE > "$LOG_FILE" 2>&1 &
+# Deploy the WAR file
+echo "Deploying $WAR_NAME to Tomcat..."
+rm -rf "$TOMCAT_WEBAPPS/sms" "$TOMCAT_WEBAPPS/$WAR_NAME"
+cp "$LOCAL_WAR_PATH" "$TOMCAT_WEBAPPS/" || { echo "Failed to copy WAR file!"; exit 1; }
 
-# Save the process ID
-echo $! > "$PID_FILE"
+# Start Tomcat
+echo "Starting Tomcat..."
+"$TOMCAT_BIN/startup.sh" > /dev/null 2>&1
 
-# Allow a brief moment for the server to start
-sleep 5
+# Wait for Tomcat to start
+sleep 10  # Increased for stability
 
-# Check if the application is running on port 8080
+# Check if the application started
 if is_port_in_use; then
-    echo "Spring Boot application started successfully on port 8080."
+    echo "Application started successfully on port $PORT."
+    echo "Access it at http://localhost:$PORT/sms/"
+    # Send success email via msmtp
+    echo -e "Subject: local deployment SUCCESSFUL\n\nDeployment succeeded on $(hostname) at $(date)." | msmtp -a icloud giovanni.suter@me.com
 else
-    echo "Failed to start the Spring Boot application. Please check logs in $LOG_FILE."
+    echo "Failed to start the application. Check logs at $LOG_FILE."
+    # Send failure email via msmtp
+    echo -e "Subject: local deployment FAILED\n\nDeployment failed on $(hostname) at $(date). Check logs at $LOG_FILE." | msmtp -a icloud giovanni.suter@me.com
     exit 1
 fi
-
-# Open the application URL in Firefox
-echo "Opening application in Firefox..."
-open -a "Firefox" http://localhost:8080/sms/students
-
-echo "Application is running on port 8080. You can access it at http://localhost:8080/sms/students"
