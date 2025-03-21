@@ -28,7 +28,7 @@ import ch.devprojects.sms.service.StudentService;
  */
 @CrossOrigin(origins = "http://localhost:4200") // Allow Angular frontend
 @RestController
-@RequestMapping("/students") // Endpoints will be under /sms/students
+@RequestMapping({"/students", "/students/"}) // Endpoints will be under /sms/students and /sms/students/
 public class StudentController {
 
     private final StudentService studentService;

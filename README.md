@@ -15,7 +15,7 @@ Available endpoints:
 --> Retrieves all students
 --  ----------------------
 http://localhost:8080/sms/students
-
+http://localhost:8080/sms/students/
 
 --> Retrieves details for given student by e-mail
 --  --------------------------------------------- 
