@@ -1,0 +1,68 @@
+#!/bin/bash
+
+# Variables
+WAR_NAME="sms.war"
+LOCAL_WAR_PATH="/Users/giovannisuter/dev/projects/sms/back-end/workspace/sms-backend/target/$WAR_NAME"
+REMOTE_USER="zitatusi"
+REMOTE_HOST="zitatusi.myhostpoint.ch"
+REMOTE_TOMCAT_DIR="app/tools/tomcat/apache-tomcat-10.1.33"
+REMOTE_WEBAPPS="$REMOTE_TOMCAT_DIR/webapps"
+PORT=8080
+
+# Function to check if port is in use on FreeBSD
+is_port_in_use_remote() {
+    ssh $REMOTE_USER@$REMOTE_HOST "sockstat -4 -l -p $PORT | grep java"
+}
+
+# Function to stop Tomcat
+stop_tomcat_remote() {
+    echo "Stopping Tomcat on remote server..."
+    ssh $REMOTE_USER@$REMOTE_HOST "$REMOTE_TOMCAT_DIR/bin/shutdown.sh"
+    sleep 5
+
+    if is_port_in_use_remote; then
+        echo "Force killing process using port $PORT..."
+        ssh $REMOTE_USER@$REMOTE_HOST "kill -9 \$(sockstat -4 -l -p $PORT | awk 'NR>1 {print \$3}')"
+    fi
+}
+
+# Build the project
+echo "Building the project..."
+cd /Users/giovannisuter/dev/projects/sms/back-end/workspace/sms-backend || { echo "Project directory not found!"; exit 1; }
+./mvnw clean package -DskipTests
+if [ $? -ne 0 ]; then
+    echo "Build failed! Exiting..."
+    exit 1
+fi
+
+# Stop Tomcat on remote server
+stop_tomcat_remote
+
+# Deploy the WAR file to remote server
+echo "Deploying $WAR_NAME to remote server..."
+scp "$LOCAL_WAR_PATH" "$REMOTE_USER@$REMOTE_HOST:$REMOTE_WEBAPPS/"
+
+# Start Tomcat on remote server
+echo "Starting Tomcat on remote server..."
+ssh $REMOTE_USER@$REMOTE_HOST "$REMOTE_TOMCAT_DIR/bin/startup.sh"
+
+# Wait for Tomcat to start
+sleep 10
+
+# Check if the application started
+if is_port_in_use_remote; then
+    echo "Application started successfully on remote server on port $PORT."
+    echo "Access it at https://smsprod.zitatusi.dbs.hostpoint.internal/sms/"
+else
+    echo "Failed to start the application on remote server."
+    exit 1
+fi
+# Send e-mail if deployment was successful or if it failed.
+echo "Production deployment started on $(hostname)" | mail -s "Production Deployment Started" giovanni.suter@me.com
+
+# Run deployment commands here...
+if [ $? -ne 0 ]; then
+    echo "Production deployment FAILED on $(hostname)" | mail -s "Production Deployment Failed" giovanni.suter@me.com
+    exit 1
+fi
+echo "Production deployment SUCCESSFUL on $(hostname)" | mail -s "Production Deployment Successful" giovanni.suter@me.com

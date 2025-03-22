@@ -17,28 +17,29 @@ public class Student {
     @Column(name = "last_name", nullable = false, length = 100)
     private String lastName;
 
-    @Column(name = "address", length = 255) // Nullable by default, no need to specify nullable = true
+    @Column(name = "address", nullable = false, length = 255)
     private String address;
 
-    @Column(name = "plz", length = 20)
+    @Column(name = "plz", nullable = false, length = 20)
     private String plz;
 
-    @Column(name = "city", length = 100)
+    @Column(name = "city", nullable = false, length = 100)
     private String city;
 
-    @Column(name = "country", length = 100)
+    @Column(name = "country", nullable = false, length = 100)
     private String country;
 
-    @Column(name = "nationality", length = 100)
+    @Column(name = "nationality", nullable = false, length = 100)
     private String nationality;
 
     @Column(name = "email", nullable = false, unique = true, length = 100)
     private String email;
 
-    @Column(name = "phone_number", nullable = false, length = 50)
+    @Column(name = "phone_number", nullable = false, unique = true, length = 50)
     private String phoneNumber;
 
-    private LocalDate dateOfBirth;  
+    @Column(name = "date_of_birth", nullable = false)
+    private LocalDate dateOfBirth;
 
     @Column(name = "gender", length = 20)
     private String gender;
@@ -46,6 +47,7 @@ public class Student {
     @Column(name = "student_id", nullable = false, unique = true, length = 20)
     private String studentId;
 
+    @Column(name = "enrollment_date", nullable = false)
     private LocalDate enrollmentDate;
 
     @Column(name = "status", nullable = false, length = 20)
@@ -54,14 +56,17 @@ public class Student {
     @Column(name = "program_level", nullable = false, length = 50)
     private String programLevel;
 
+    @Column(name = "user_id")
+    private Long userId;  // Stores the user ID (nullable)
+
     // Default constructor
     public Student() {}
 
-    // Constructor with all fields (except ID)
+    // Constructor with all fields
     public Student(String firstName, String lastName, String address, String plz, String city,
                    String country, String nationality, String email, String phoneNumber,
                    LocalDate dateOfBirth, String gender, String studentId, LocalDate enrollmentDate,
-                   String status, String programLevel) {
+                   String status, String programLevel, Long userId) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.address = address;
@@ -77,19 +82,7 @@ public class Student {
         this.enrollmentDate = enrollmentDate;
         this.status = status;
         this.programLevel = programLevel;
-    }
-
-    // Constructor with only essential fields
-    public Student(String firstName, String lastName, String email, String phoneNumber,
-                   LocalDate dateOfBirth, String studentId, LocalDate enrollmentDate, String status) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.phoneNumber = phoneNumber;
-        this.dateOfBirth = dateOfBirth;
-        this.studentId = studentId;
-        this.enrollmentDate = enrollmentDate;
-        this.status = status;
+        this.userId = userId;
     }
 
     // Getters and Setters
@@ -221,6 +214,14 @@ public class Student {
         this.programLevel = programLevel;
     }
 
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
     @Override
     public String toString() {
         return "Student{" +
@@ -240,6 +241,7 @@ public class Student {
                 ", enrollmentDate=" + enrollmentDate +
                 ", status='" + status + '\'' +
                 ", programLevel='" + programLevel + '\'' +
+                ", userId=" + userId +
                 '}';
     }
 }
