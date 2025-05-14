@@ -15,7 +15,7 @@ public class InternationalizationConfig {
     @Bean
     public LocaleResolver localeResolver() {
         AcceptHeaderLocaleResolver slr = new AcceptHeaderLocaleResolver();
-        slr.setDefaultLocale(Locale.ENGLISH); // Default
+        slr.setDefaultLocale(Locale.ENGLISH);
         return slr;
     }
 
@@ -23,7 +23,7 @@ public class InternationalizationConfig {
     public MessageSource messageSource() {
         ReloadableResourceBundleMessageSource messageSource =
                 new ReloadableResourceBundleMessageSource();
-        messageSource.setBasename("classpath:messages"); // matches messages.properties
+        messageSource.setBasename("classpath:messages");
         messageSource.setDefaultEncoding("UTF-8");
         return messageSource;
     }
