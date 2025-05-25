@@ -2,11 +2,12 @@
 
 # === Configuration ===
 LOCAL_PROJECT_DIR="/Users/giovannisuter/dev/projects/sms/back-end/workspace/sms-backend"
-WAR_FILE="sms.war"
+WAR_FILE="sms-backend.war"
 REMOTE_USER="zitatusi"
 REMOTE_HOST="zitatusi.myhostpoint.ch"
 REMOTE_DEPLOY_DIR="/home/zitatusi/deploy"
-REMOTE_TOMCAT_DIR="app/tools/tomcat/apache-tomcat-10.1.33"
+# REMOTE_TOMCAT_DIR="app/tools/tomcat/apache-tomcat-10.1.33"
+REMOTE_TOMCAT_DIR="/home/zitatusi/app/tools/tomcat/apache-tomcat-10.1.33"
 REMOTE_WEBAPPS="$REMOTE_TOMCAT_DIR/webapps"
 REMOTE_WAR_FILE="$REMOTE_WEBAPPS/$WAR_FILE"
 REMOTE_LOGS_DIR="$REMOTE_TOMCAT_DIR/logs"

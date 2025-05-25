@@ -3,29 +3,14 @@ package ch.devprojects.sms.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 @Configuration
-@EnableWebSecurity
-public class SecurityConfig {
-
-	// To avoid 403 errors for now, use this simple config temporarily
-	// All endpoints accessible from Angular (GET, POST, PUT, DELETE)
-	// No login needed
-	// No protection yet → only use for development/testing
-	
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-	        http.csrf(csrf -> csrf.disable()).authorizeHttpRequests(auth -> auth.anyRequest().permitAll()
-            );
-
-        return http.build();
-    }
-}
-/*
-@Configuration
-@EnableWebSecurity
 public class SecurityConfig {
 
     @Bean
@@ -34,8 +19,7 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/sms/students/**").permitAll()
-                .anyRequest().permitAll()
+                .requestMatchers("/**").permitAll()
             );
 
         return http.build();
@@ -44,13 +28,14 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
+        
         config.setAllowedOrigins(List.of(
-            "http://localhost:4200",        // Angular dev
-            "https://devprojects.ch"        // Angular prod
+            "http://localhost:4200",       // Angular dev
+            "https://devprojects.ch"       // Production
         ));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
-        config.setAllowCredentials(false);  // or true only if you're using cookies
+        config.setAllowCredentials(true); // Required if cookies or sessions are involved
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
@@ -58,4 +43,3 @@ public class SecurityConfig {
         return source;
     }
 }
-*/

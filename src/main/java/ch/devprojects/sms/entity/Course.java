@@ -1,11 +1,20 @@
 package ch.devprojects.sms.entity;
 
 import jakarta.persistence.*;
+import java.util.List;
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name = "course")
 public class Course {
+
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties
+    private List<Enrollment> enrollments;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,6 +34,9 @@ public class Course {
 
     @Column(name = "professor_id")
     private Long professorId;
+
+    // Constructors
+    public Course() {}
 
     // Getters & Setters
 
@@ -82,5 +94,22 @@ public class Course {
 
     public void setProfessorId(Long professorId) {
         this.professorId = professorId;
+    }
+
+    public List<Enrollment> getEnrollments() {
+        return enrollments;
+    }
+
+    public void setEnrollments(List<Enrollment> enrollments) {
+        this.enrollments = enrollments;
+    }
+
+    // Alias for getCourseName to avoid getName() error
+    public String getName() {
+        return getCourseName();
+    }
+
+    public void setName(String name) {
+        setCourseName(name);
     }
 }

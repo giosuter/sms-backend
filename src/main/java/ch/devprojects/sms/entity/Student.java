@@ -1,8 +1,11 @@
 package ch.devprojects.sms.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+
 import java.time.LocalDate;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name = "student")
 public class Student {
@@ -11,81 +14,30 @@ public class Student {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "first_name", nullable = false, length = 100)
     private String firstName;
-
-    @Column(name = "last_name", nullable = false, length = 100)
     private String lastName;
-
-    @Column(name = "address", nullable = false, length = 255)
     private String address;
-
-    @Column(name = "plz", nullable = false, length = 20)
     private String plz;
-
-    @Column(name = "city", nullable = false, length = 100)
     private String city;
-
-    @Column(name = "country", nullable = false, length = 100)
     private String country;
-
-    @Column(name = "nationality", nullable = false, length = 100)
     private String nationality;
-
-    @Column(name = "email", nullable = false, unique = true, length = 100)
     private String email;
-
-    @Column(name = "phone_number", nullable = false, unique = true, length = 50)
     private String phoneNumber;
 
-    @Column(name = "date_of_birth", nullable = false)
     private LocalDate dateOfBirth;
 
-    @Column(name = "gender", length = 20)
     private String gender;
-
-    @Column(name = "student_id", nullable = false, unique = true, length = 20)
     private String studentId;
-
-    @Column(name = "enrollment_date", nullable = false)
     private LocalDate enrollmentDate;
-
-    @Column(name = "status", nullable = false, length = 20)
     private String status;
-
-    @Column(name = "program_level", nullable = false, length = 50)
     private String programLevel;
 
-    @Column(name = "user_id")
-    private Long userId;  // Stores the user ID (nullable)
-
-    // Default constructor
-    public Student() {}
-
-    // Constructor with all fields
-    public Student(String firstName, String lastName, String address, String plz, String city,
-                   String country, String nationality, String email, String phoneNumber,
-                   LocalDate dateOfBirth, String gender, String studentId, LocalDate enrollmentDate,
-                   String status, String programLevel, Long userId) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.address = address;
-        this.plz = plz;
-        this.city = city;
-        this.country = country;
-        this.nationality = nationality;
-        this.email = email;
-        this.phoneNumber = phoneNumber;
-        this.dateOfBirth = dateOfBirth;
-        this.gender = gender;
-        this.studentId = studentId;
-        this.enrollmentDate = enrollmentDate;
-        this.status = status;
-        this.programLevel = programLevel;
-        this.userId = userId;
+    public Student() {
+        // Required by JPA and for JSON deserialization
     }
 
-    // Getters and Setters
+    // Getters and setters
+
     public Long getId() {
         return id;
     }
@@ -212,36 +164,5 @@ public class Student {
 
     public void setProgramLevel(String programLevel) {
         this.programLevel = programLevel;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
-    @Override
-    public String toString() {
-        return "Student{" +
-                "id=" + id +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", address='" + address + '\'' +
-                ", plz='" + plz + '\'' +
-                ", city='" + city + '\'' +
-                ", country='" + country + '\'' +
-                ", nationality='" + nationality + '\'' +
-                ", email='" + email + '\'' +
-                ", phoneNumber='" + phoneNumber + '\'' +
-                ", dateOfBirth=" + dateOfBirth +
-                ", gender='" + gender + '\'' +
-                ", studentId='" + studentId + '\'' +
-                ", enrollmentDate=" + enrollmentDate +
-                ", status='" + status + '\'' +
-                ", programLevel='" + programLevel + '\'' +
-                ", userId=" + userId +
-                '}';
     }
 }

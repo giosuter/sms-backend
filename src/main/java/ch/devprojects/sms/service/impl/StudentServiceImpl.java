@@ -221,11 +221,11 @@ public class StudentServiceImpl implements StudentService {
     @Override
     @Transactional
     public void deleteStudentById(Long id) {
-        if (studentRepository.existsById(id)) {
-            studentRepository.deleteById(id);
-        } else {
-            throw new RuntimeException("Student with ID " + id + " not found.");
-        }
+    	studentRepository.findById(id)
+        .ifPresentOrElse(
+            studentRepository::delete,
+            () -> { throw new RuntimeException("Student with ID " + id + " not found."); }
+        );
     }
 
     /**
